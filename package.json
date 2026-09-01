@@ -1,0 +1,31 @@
+{
+  "name": "loi-gui-qr",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "^2.1.7",
+    "@prisma/client": "^6.15.0",
+    "@tailwindcss/postcss": "^4.1.12",
+    "gsap": "^3.13.0",
+    "next": "^15.5.7",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-hook-form": "^7.62.0",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "prisma": "^6.15.0",
+    "tailwindcss": "^4.1.12",
+    "typescript": "^5.9.2"
+  }
+}

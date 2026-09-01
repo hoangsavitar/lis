@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GiftMessage {
+  id              String   @id @default(cuid())
+  codeDigest      String   @unique
+  manageTokenHash String   @unique
+  recipientName   String
+  senderName      String?
+  hideSender      Boolean  @default(false)
+  message         String
+  theme           String   @default("botanical")
+  status          String   @default("ACTIVE")
+  expiresAt       DateTime?
+  openedAt        DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  accessAttempts  AccessAttempt[]
+}
+
+model AccessAttempt {
+  id          String       @id @default(cuid())
+  messageId   String?
+  message     GiftMessage? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  ipHash      String
+  success     Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+
+  @@index([ipHash, createdAt])
+}
