@@ -3,105 +3,202 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import { ArrowClockwise, Heart, Sparkle } from "@phosphor-icons/react";
+import { ArrowClockwise, CaretDown, Heart, LockKey, QrCode, Key, Sparkle } from "@phosphor-icons/react";
 
 type Gift = {
   recipientName: string;
   senderName?: string;
   hideSender: boolean;
   message: string;
-  theme?: string;
 };
 
-export function EnvelopeReveal({ gift, onOpenChange }: { gift: Gift; onOpenChange?: (isOpen: boolean) => void }) {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const letterRef = useRef<HTMLDivElement>(null);
-  const flapRef = useRef<HTMLDivElement>(null);
-  const sealRef = useRef<HTMLButtonElement>(null);
-  const sparkleRef = useRef<HTMLDivElement>(null);
-  const openFrameRef = useRef<number | null>(null);
+export function EnvelopeReveal({
+  gift,
+  onOpenChange,
+}: {
+  gift: Gift;
+  onOpenChange?: (isOpen: boolean) => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const letterCardRef = useRef<HTMLDivElement>(null);
+  const envelopeFlapRef = useRef<HTMLDivElement>(null);
+  const sealButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (!rootRef.current) return;
-    const root = rootRef.current;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const ctx = gsap.context(() => {
-      gsap.set(letterRef.current, { y: 84, rotate: 0 });
-      gsap.set(flapRef.current, { rotateX: 0 });
-      gsap.set(sealRef.current, { scale: 1, opacity: 1 });
-      gsap.set(sparkleRef.current, { opacity: 0 });
-      if (reduceMotion) return;
-      gsap.fromTo(root, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" });
-      const glow = root.querySelector(".reveal-glow");
-      if (glow) gsap.to(glow, { scale: 1.12, opacity: 0.72, duration: 2.6, yoyo: true, repeat: -1, ease: "sine.inOut" });
-    }, rootRef);
-    return () => ctx.revert();
-  }, []);
-
-  function openEnvelope() {
+  function handleOpen() {
     if (isOpen) return;
     setIsOpen(true);
     onOpenChange?.(true);
-    if (!rootRef.current) return;
-    openFrameRef.current = window.requestAnimationFrame(() => {
-      if (!rootRef.current || !letterRef.current) return;
-      const stage = rootRef.current.querySelector<HTMLElement>(".reveal-stage");
-      const stageHeight = stage?.getBoundingClientRect().height || 460;
-      const letterHeight = letterRef.current.getBoundingClientRect().height;
-      const letterTop = Number.parseFloat(window.getComputedStyle(letterRef.current).top) || 0;
-      const openLetterY = Math.max(24, (stageHeight - letterHeight) / 2 - letterTop);
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      stage?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
-      if (reduceMotion) {
-        gsap.set(letterRef.current, { y: openLetterY, rotate: -1 });
-        gsap.set(flapRef.current, { rotateX: -174 });
-        gsap.set(sealRef.current, { scale: 0.7, opacity: 0 });
-        return;
-      }
-      const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
-      timeline.to(sealRef.current, { scale: 1.18, duration: 0.24, ease: "back.out(2)" })
-        .to(sealRef.current, { scale: 0.7, opacity: 0, duration: 0.25 }, "<0.1")
-        .to(flapRef.current, { rotateX: -174, duration: 0.68, ease: "power2.inOut" }, "<0.06")
-        .to(letterRef.current, { y: openLetterY, rotate: -1.2, duration: 1.15, ease: "back.out(1.3)" }, "<0.24")
-        .to(sparkleRef.current, { opacity: 1, duration: 0.35 }, "<0.35")
-        .fromTo(rootRef.current.querySelectorAll(".letter-reveal"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.48, stagger: 0.07 }, "<0.18");
-    });
+
+    if (letterCardRef.current && envelopeFlapRef.current) {
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+      tl.to(sealButtonRef.current, { scale: 0.8, opacity: 0, duration: 0.25 })
+        .to(envelopeFlapRef.current, { rotateX: 180, duration: 0.6, ease: "power2.inOut" }, "<0.1")
+        .to(letterCardRef.current, {
+          y: -140,
+          scale: 1.02,
+          duration: 0.8,
+          ease: "back.out(1.2)",
+        }, "<0.2")
+        .fromTo(
+          ".letter-content-fade",
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 },
+          "-=0.3"
+        );
+    }
   }
 
-  function replay() {
-    if (openFrameRef.current) window.cancelAnimationFrame(openFrameRef.current);
+  function handleReplay() {
     setIsOpen(false);
     onOpenChange?.(false);
-    window.setTimeout(() => {
-      if (letterRef.current) gsap.set(letterRef.current, { y: 84, rotate: 0 });
-      if (flapRef.current) gsap.set(flapRef.current, { rotateX: 0 });
-      if (sealRef.current) gsap.set(sealRef.current, { scale: 1, opacity: 1 });
-      if (sparkleRef.current) gsap.set(sparkleRef.current, { opacity: 0 });
-    }, 10);
+    if (letterCardRef.current && envelopeFlapRef.current && sealButtonRef.current) {
+      gsap.set(letterCardRef.current, { y: 0, scale: 1 });
+      gsap.set(envelopeFlapRef.current, { rotateX: 0 });
+      gsap.set(sealButtonRef.current, { scale: 1, opacity: 1 });
+    }
   }
 
   return (
-    <div ref={rootRef} className={`space-y-5 ${isOpen ? "is-open" : ""}`}>
-      <div className={`reveal-stage ${isOpen ? "is-open" : ""} theme-${gift.theme || "botanical"}`}>
-        <div className="reveal-glow" />
-        <div ref={sparkleRef} className="absolute inset-0 z-10 pointer-events-none" aria-hidden="true"><Sparkle className="absolute left-[18%] top-[24%] text-white/80" size={18} /><Sparkle className="absolute right-[20%] top-[29%] text-white/80" size={13} /><Sparkle className="absolute bottom-[22%] left-[26%] text-white/70" size={11} /></div>
-        <div ref={letterRef} className="letter-card">
-          <div className="letter-reveal opacity-0"><p className="font-display text-xl italic text-[var(--rose)]">Dear {gift.recipientName},</p><p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[var(--muted)]">{gift.message}</p><p className="mt-4 font-display text-lg text-[var(--rose)]">{gift.hideSender ? "Một người thương bạn" : gift.senderName || "Một người thương bạn"} <Heart className="ml-1 inline text-[var(--rose)]" size={15} weight="fill" aria-hidden="true" /></p></div>
+    <div ref={rootRef} className="w-full max-w-md mx-auto space-y-8">
+      {/* Recipient Greeting Header */}
+      <div className="text-center space-y-1">
+        <p className="eyebrow text-xs uppercase tracking-[0.2em]">Dành cho</p>
+        <h2 className="font-display text-2xl sm:text-3xl font-semibold text-[var(--ink)] flex items-center justify-center gap-2">
+          <span>{gift.recipientName}</span>
+          <span className="text-[var(--rose)]">♡</span>
+        </h2>
+      </div>
+
+      {/* Interactive Envelope Ritual */}
+      <div className="relative pt-24 pb-4 flex flex-col items-center">
+        {/* The Emerging Letter Card */}
+        <div
+          ref={letterCardRef}
+          className={`stationery-card w-full max-w-sm z-10 transition-all ${
+            isOpen ? "shadow-2xl" : "shadow-md"
+          }`}
+          style={{ willChange: "transform" }}
+        >
+          {/* Subtle floral watermark in letter */}
+          <div className="pointer-events-none absolute right-2 bottom-2 w-20 opacity-25">
+            <Image
+              src="/images/calla-lily-single.jpg"
+              alt=""
+              width={100}
+              height={100}
+              className="object-contain -rotate-12"
+            />
+          </div>
+
+          <div className="space-y-4">
+            <p className="font-display text-xl sm:text-2xl italic text-[var(--rose-dark)] letter-content-fade">
+              Dear {gift.recipientName},
+            </p>
+            <p className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed text-[var(--ink)] letter-content-fade">
+              {gift.message}
+            </p>
+            <div className="pt-2 text-right letter-content-fade">
+              <p className="text-sm font-medium text-[var(--rose-dark)]">
+                Yêu thương, {gift.hideSender ? "Một người thương bạn" : gift.senderName || "LIS"}
+                <span className="ml-1 text-[var(--rose)]">♡</span>
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="envelope-shell floating-envelope">
-          <div className="envelope-back" />
-          <div ref={flapRef} className="envelope-flap" />
-          <div className="envelope-front" />
-          <button ref={sealRef} type="button" className="seal cursor-pointer" onClick={openEnvelope} aria-label={isOpen ? "Thư đã mở" : "Chạm để mở thư"} disabled={isOpen}>
-            <Image src="/brand/lis-by-lii-mark.png" alt="" fill sizes="77px" className="seal-image" />
+
+        {/* Envelope Structure (Sage Teal) */}
+        <div className="envelope-box relative -mt-36 z-20">
+          <div className="envelope-pocket" />
+          <div
+            ref={envelopeFlapRef}
+            className={`envelope-top-flap ${isOpen ? "is-open" : ""}`}
+            style={{ transformOrigin: "top center" }}
+          />
+
+          {/* Pink Wax Seal Button */}
+          <button
+            ref={sealButtonRef}
+            type="button"
+            className={`wax-seal-btn ${isOpen ? "is-opened" : ""}`}
+            onClick={handleOpen}
+            aria-label="Nhấn vào con dấu sáp để mở thư"
+          >
+            <div className="relative w-full h-full rounded-full shadow-lg">
+              <Image
+                src="/images/pink-wax-seal.jpg"
+                alt="Con dấu sáp LIS"
+                fill
+                sizes="58px"
+                className="rounded-full object-cover"
+              />
+            </div>
           </button>
         </div>
-        <div className="absolute inset-x-0 bottom-7 z-20 text-center"><p className="reveal-status text-xs font-semibold uppercase tracking-[0.16em] text-white/85">{isOpen ? "Một điều được gửi bằng cả tấm lòng" : "Chạm vào con dấu để mở"}</p></div>
+
+        {/* Prompt below envelope */}
+        <div className="text-center mt-6 z-30">
+          {!isOpen ? (
+            <button
+              type="button"
+              onClick={handleOpen}
+              className="inline-flex flex-col items-center gap-1 text-[var(--ink)] hover:text-[var(--rose-dark)] transition-colors cursor-pointer group"
+            >
+              <span className="font-display italic text-lg text-[var(--ink)] group-hover:text-[var(--rose-dark)]">
+                Nhấn để mở thư
+              </span>
+              <CaretDown
+                size={18}
+                className="text-[var(--rose)] animate-bounce"
+                weight="bold"
+              />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleReplay}
+              className="btn-ghost text-xs min-h-9 px-4 rounded-full inline-flex items-center gap-2"
+            >
+              <ArrowClockwise size={14} />
+              <span>Đóng và xem lại mở thư</span>
+            </button>
+          )}
+        </div>
       </div>
-      {isOpen && <div className="flex justify-center rounded-2xl border border-[var(--line)] bg-[rgba(255,253,251,0.62)] p-4">
-        <button type="button" className="btn-ghost min-h-10 px-4 text-xs" onClick={replay}><ArrowClockwise size={15} aria-hidden="true" /> Xem lại</button>
-      </div>}
+
+      {/* Screen 6 Trust & Features matching mockup */}
+      <div className="pt-6 border-t border-[rgba(212,130,142,0.18)] space-y-3">
+        <div className="feature-pill">
+          <div className="feature-pill-icon">
+            <LockKey size={18} weight="duotone" />
+          </div>
+          <div>
+            <p className="font-semibold text-xs text-[var(--ink)]">Mỗi lời nhắn được mã hoá riêng</p>
+            <p className="text-[11px] text-[var(--muted)]">Chỉ bạn và người gửi biết nội dung</p>
+          </div>
+        </div>
+
+        <div className="feature-pill">
+          <div className="feature-pill-icon">
+            <QrCode size={18} weight="duotone" />
+          </div>
+          <div>
+            <p className="font-semibold text-xs text-[var(--ink)]">Quét mã QR chung trên thiệp</p>
+            <p className="text-[11px] text-[var(--muted)]">Dễ dàng mở từ mọi điện thoại</p>
+          </div>
+        </div>
+
+        <div className="feature-pill">
+          <div className="feature-pill-icon">
+            <Key size={18} weight="duotone" />
+          </div>
+          <div>
+            <p className="font-semibold text-xs text-[var(--ink)]">Nhập mã truy cập</p>
+            <p className="text-[11px] text-[var(--muted)]">Để mở lời nhắn chỉ dành cho bạn</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

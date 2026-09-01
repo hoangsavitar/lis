@@ -24,10 +24,10 @@ const demoGift: GiftRecord = {
   code: "582913",
   manageToken: "demo-manage-token",
   recipientName: "Minh Anh",
-  senderName: "An",
+  senderName: "A.",
   hideSender: false,
-  message: "Cảm ơn em vì luôn là nguồn động lực và niềm vui mỗi ngày. Chúc em thật nhiều hạnh phúc và bình an.",
-  theme: "botanical",
+  message: "Cảm ơn em vì luôn là nguồn động lực và niềm vui mỗi ngày. Chúc em 20/10 thật nhiều hạnh phúc và bình an.",
+  theme: "calla-lily",
   createdAt: new Date().toISOString(),
 };
 

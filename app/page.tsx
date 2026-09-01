@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowUpRight, HeartStraight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowDown, ArrowUpRight, Heart, Sparkle } from "@phosphor-icons/react/dist/ssr";
 import { CreateFlow } from "@/components/create-flow";
-import { FloralArt } from "@/components/floral-art";
 import { LisBrand } from "@/components/lis-brand";
 import { SiteHeader } from "@/components/site-header";
 
@@ -11,63 +10,99 @@ export default function HomePage() {
     <>
       <SiteHeader />
       <main id="main-content">
+        {/* HERO SECTION matching Mockup cover */}
         <section className="hero-shell section-shell">
-          <FloralArt className="hero-floral-art hero-floral-left" decorative />
-          <FloralArt className="hero-floral-art hero-floral-right" decorative />
-          <div className="hero-intro">
-            <p className="eyebrow">Một món quà · Một điều thật lòng</p>
-            <h1 className="hero-title">
-              Trao điều<br />
-              <em>chưa kịp nói.</em>
-            </h1>
-            <p className="hero-lead">LIS BY LII giữ lời bạn trong một tấm thư dành riêng cho người thương.</p>
-          </div>
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center">
+            {/* Left Column: Romantic Typography & Value Proposition */}
+            <div className="space-y-6 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(253,242,244,0.85)] border border-[rgba(212,130,142,0.25)] text-xs font-semibold tracking-widest text-[var(--rose-dark)] uppercase">
+                <Sparkle size={14} className="text-[var(--rose)]" weight="fill" />
+                <span>20/10 · Trao gửi yêu thương</span>
+              </div>
 
-          <div className="gift-bridge" aria-label="Từ người gửi, qua LIS BY LII, đến người nhận">
-            <Link href="#tao-loi-chuc" className="journey-card journey-sender">
-              <span className="journey-index">01</span>
-              <span className="journey-kicker">Bạn muốn gửi</span>
-              <strong>Viết lời chúc</strong>
-              <span className="journey-note">Cho món quà bạn sắp trao</span>
-              <ArrowUpRight className="journey-arrow" size={20} aria-hidden="true" />
-            </Link>
+              <div>
+                <span className="hero-romantic-title">Dearly,</span>
+                <h1 className="hero-main-title">
+                  from <span className="font-medium tracking-[0.25em] text-[var(--rose-dark)]">LIS</span>
+                </h1>
+                <p className="mt-4 text-base sm:text-lg text-[var(--muted)] max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                  Gửi một lời nhắn yêu thương đến người đặc biệt, ẩn giấu trọn vẹn bên trong món quà của bạn.
+                </p>
+              </div>
 
-            <div className="brand-passage">
-              <span className="passage-line" aria-hidden="true" />
-              <div className="brand-portrait">
+              {/* Journey CTAs: 01 Tạo lời chúc & 02 Mở lời nhắn */}
+              <div className="grid sm:grid-cols-2 gap-4 max-w-lg mx-auto lg:mx-0 pt-2">
+                <Link href="#tao-loi-chuc" className="journey-card journey-sender group">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold tracking-widest text-[var(--rose)]">01</span>
+                    <ArrowUpRight size={18} className="text-[var(--rose)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </div>
+                  <span className="text-xs text-[var(--muted)]">Bạn muốn gửi</span>
+                  <strong className="font-display text-lg text-[var(--ink)] mt-0.5">Tạo lời nhắn</strong>
+                  <span className="text-xs text-[var(--muted)] mt-1">Cho món quà bạn sắp trao</span>
+                </Link>
+
+                <Link href="/mo-qua" className="journey-card journey-recipient group">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold tracking-widest text-[var(--teal-dark)]">02</span>
+                    <ArrowUpRight size={18} className="text-[var(--teal-dark)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </div>
+                  <span className="text-xs text-[var(--muted)]">Bạn đang nhận</span>
+                  <strong className="font-display text-lg text-[var(--ink)] mt-0.5">Mở lời nhắn</strong>
+                  <span className="text-xs text-[var(--muted)] mt-1">Nhập 6 số để mở thư</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column: Hero Visual Illustration (Pink Calla Lilies in Sage Box) */}
+            <div className="relative mx-auto w-full max-w-sm sm:max-w-md">
+              <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl border border-[rgba(212,130,142,0.2)] bg-white">
                 <Image
-                  src="/brand/lis-by-lii-mark.png"
-                  alt="Biểu tượng LIS BY LII trên nền nhung đỏ burgundy"
+                  src="/images/calla-lily-hero.jpg"
+                  alt="Hộp quà hoa Rum hồng LIS thanh lịch"
                   fill
                   priority
-                  sizes="(max-width: 767px) 68vw, 310px"
+                  sizes="(max-width: 768px) 90vw, 440px"
                   className="object-cover"
                 />
               </div>
-              <LisBrand className="hero-brand-signature" />
-              <span className="passage-line" aria-hidden="true" />
-            </div>
 
-            <Link href="/mo-qua" className="journey-card journey-recipient">
-              <span className="journey-index">02</span>
-              <span className="journey-kicker">Bạn đang nhận</span>
-              <strong>Mở lời nhắn</strong>
-              <span className="journey-note">Một điều riêng đang chờ bạn</span>
-              <ArrowUpRight className="journey-arrow" size={20} aria-hidden="true" />
-            </Link>
+              {/* Floating decorative label */}
+              <div className="absolute -bottom-4 -left-4 sm:bottom-6 sm:-left-6 bg-white/95 backdrop-blur-md px-4 py-3 rounded-2xl border border-[rgba(212,130,142,0.25)] shadow-xl flex items-center gap-3">
+                <div className="size-10 rounded-full bg-[rgba(253,242,244,0.9)] flex items-center justify-center text-[var(--rose)]">
+                  <Heart size={20} weight="fill" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-[var(--ink)]">LIS Gifting Ritual</p>
+                  <p className="text-[11px] text-[var(--muted)]">Tinh tế trong từng món quà</p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <a href="#tao-loi-chuc" className="hero-scroll">
-            Bắt đầu viết <ArrowDown size={15} aria-hidden="true" />
-          </a>
+          <div className="mt-12 text-center">
+            <a
+              href="#tao-loi-chuc"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[var(--rose-dark)] hover:opacity-80 transition-opacity"
+            >
+              <span>Bắt đầu viết lời nhắn</span>
+              <ArrowDown size={14} className="animate-bounce" />
+            </a>
+          </div>
         </section>
 
+        {/* Form creation section */}
         <CreateFlow />
       </main>
+
+      {/* Footer */}
       <footer className="site-footer">
-        <div className="section-shell flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="section-shell flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between text-center sm:text-left">
           <LisBrand compact />
-          <p>Gói trọn lời yêu thương trong từng món quà <HeartStraight size={15} weight="fill" aria-hidden="true" /></p>
+          <p className="text-xs text-[var(--muted)] flex items-center justify-center sm:justify-start gap-1.5">
+            <span>Gói trọn lời yêu thương trong từng món quà</span>
+            <Heart size={14} weight="fill" className="text-[var(--rose)]" aria-hidden="true" />
+          </p>
         </div>
       </footer>
     </>
