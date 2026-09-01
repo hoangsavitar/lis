@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowUpRight, Heart, Sparkle } from "@phosphor-icons/react/dist/ssr";
 import { CreateFlow } from "@/components/create-flow";
+import { FloralArt } from "@/components/floral-art";
 import { LisBrand } from "@/components/lis-brand";
 import { SiteHeader } from "@/components/site-header";
 
@@ -11,13 +12,17 @@ export default function HomePage() {
       <SiteHeader />
       <main id="main-content">
         {/* HERO SECTION matching Mockup cover */}
-        <section className="hero-shell section-shell">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center">
+        <section className="hero-shell section-shell relative overflow-hidden">
+          {/* Animated Botanical Floating Flowers in background */}
+          <FloralArt className="bg-floral-art bg-floral-left" decorative />
+          <FloralArt className="bg-floral-art bg-floral-right" decorative />
+
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center relative z-10">
             {/* Left Column: Romantic Typography & Value Proposition */}
             <div className="space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(253,242,244,0.85)] border border-[rgba(212,130,142,0.25)] text-xs font-semibold tracking-widest text-[var(--rose-dark)] uppercase">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(253,242,244,0.85)] border border-[rgba(212,130,142,0.25)] text-xs font-semibold tracking-wider text-[var(--rose-dark)] uppercase">
                 <Sparkle size={14} className="text-[var(--rose)]" weight="fill" />
-                <span>20/10 · Trao gửi yêu thương</span>
+                <span>Túi xách cao cấp LIS · Lời nhắn giấu kín</span>
               </div>
 
               <div>
@@ -26,7 +31,7 @@ export default function HomePage() {
                   from <span className="font-medium tracking-[0.25em] text-[var(--rose-dark)]">LIS</span>
                 </h1>
                 <p className="mt-4 text-base sm:text-lg text-[var(--muted)] max-w-lg mx-auto lg:mx-0 leading-relaxed">
-                  Gửi một lời nhắn yêu thương đến người đặc biệt, ẩn giấu trọn vẹn bên trong món quà của bạn.
+                  Trao tặng chiếc túi xách nàng yêu thích, gửi kèm bức thư kỹ thuật số bí mật được giấu kín trọn vẹn bên trong món quà.
                 </p>
               </div>
 
@@ -37,9 +42,9 @@ export default function HomePage() {
                     <span className="text-xs font-bold tracking-widest text-[var(--rose)]">01</span>
                     <ArrowUpRight size={18} className="text-[var(--rose)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </div>
-                  <span className="text-xs text-[var(--muted)]">Bạn muốn gửi</span>
+                  <span className="text-xs text-[var(--muted)]">Bạn tặng túi xách</span>
                   <strong className="font-display text-lg text-[var(--ink)] mt-0.5">Tạo lời nhắn</strong>
-                  <span className="text-xs text-[var(--muted)] mt-1">Cho món quà bạn sắp trao</span>
+                  <span className="text-xs text-[var(--muted)] mt-1">Gửi kèm chiếc túi LIS sắp trao</span>
                 </Link>
 
                 <Link href="/mo-qua" className="journey-card journey-recipient group">
@@ -47,9 +52,9 @@ export default function HomePage() {
                     <span className="text-xs font-bold tracking-widest text-[var(--teal-dark)]">02</span>
                     <ArrowUpRight size={18} className="text-[var(--teal-dark)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </div>
-                  <span className="text-xs text-[var(--muted)]">Bạn đang nhận</span>
+                  <span className="text-xs text-[var(--muted)]">Bạn được tặng túi</span>
                   <strong className="font-display text-lg text-[var(--ink)] mt-0.5">Mở lời nhắn</strong>
-                  <span className="text-xs text-[var(--muted)] mt-1">Nhập 6 số để mở thư</span>
+                  <span className="text-xs text-[var(--muted)] mt-1">Nhập 6 số trên thiệp kèm túi</span>
                 </Link>
               </div>
             </div>
@@ -59,7 +64,7 @@ export default function HomePage() {
               <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl border border-[rgba(212,130,142,0.2)] bg-white">
                 <Image
                   src="/images/calla-lily-hero.jpg"
-                  alt="Hộp quà hoa Rum hồng LIS thanh lịch"
+                  alt="Hộp quà túi xách và hoa Rum hồng LIS thanh lịch"
                   fill
                   priority
                   sizes="(max-width: 768px) 90vw, 440px"
@@ -73,8 +78,8 @@ export default function HomePage() {
                   <Heart size={20} weight="fill" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[var(--ink)]">LIS Gifting Ritual</p>
-                  <p className="text-[11px] text-[var(--muted)]">Tinh tế trong từng món quà</p>
+                  <p className="text-xs font-semibold text-[var(--ink)]">LIS Handbag & Gifting</p>
+                  <p className="text-[11px] text-[var(--muted)]">Tinh tế trong từng món quà trao tay</p>
                 </div>
               </div>
             </div>

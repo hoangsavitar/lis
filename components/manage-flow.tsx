@@ -157,7 +157,7 @@ export function ManageFlow({ manageToken }: { manageToken: string }) {
             <span className="text-xs font-semibold uppercase tracking-wider text-[var(--teal-dark)]">
               Mã nhận của bạn
             </span>
-            <span className="font-display text-xl font-bold tracking-[0.2em] text-[var(--teal-dark)]">
+            <span className="font-sans text-xl font-bold tracking-[0.2em] text-[var(--teal-dark)] tabular-nums [font-variant-numeric:lining-nums_tabular-nums] leading-none">
               {gift.code}
             </span>
           </div>

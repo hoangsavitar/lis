@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, ArrowUpRight, WarningCircle } from "@phosphor-icons/react";
 import { EnvelopeReveal } from "./envelope-reveal";
+import { FloralArt } from "./floral-art";
 import { LisBrand } from "./lis-brand";
 
 type Gift = {
@@ -78,29 +79,35 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
 
   if (gift) {
     return (
-      <section className="section-shell max-w-lg py-8 md:py-16">
-        <div className="flex items-center justify-between mb-6">
-          <button
-            type="button"
-            className="btn-ghost text-xs min-h-9 px-3.5"
-            onClick={handleReset}
-          >
-            <ArrowLeft size={14} aria-hidden="true" />
-            <span>Nhập mã khác</span>
-          </button>
-          <LisBrand compact />
-        </div>
+      <section className="section-shell max-w-lg py-8 md:py-16 relative">
+        <FloralArt className="bg-floral-art bg-floral-right opacity-30" decorative />
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <button
+              type="button"
+              className="btn-ghost text-xs min-h-9 px-3.5"
+              onClick={handleReset}
+            >
+              <ArrowLeft size={14} aria-hidden="true" />
+              <span>Nhập mã khác</span>
+            </button>
+            <LisBrand compact />
+          </div>
 
-        <div className="paper-card p-6 sm:p-8">
-          <EnvelopeReveal gift={gift} />
+          <div className="paper-card p-6 sm:p-8">
+            <EnvelopeReveal gift={gift} />
+          </div>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="section-shell max-w-md py-8 sm:py-16">
-      <div className="paper-card p-6 sm:p-9 text-center relative overflow-hidden">
+    <section className="section-shell max-w-md py-8 sm:py-16 relative">
+      <FloralArt className="bg-floral-art bg-floral-left opacity-35" decorative />
+      <FloralArt className="bg-floral-art bg-floral-right opacity-30" decorative />
+
+      <div className="paper-card p-6 sm:p-9 text-center relative overflow-hidden z-10">
         {/* Brand Header */}
         <div className="mb-6 flex justify-center">
           <LisBrand />
@@ -124,10 +131,10 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
         <div className="space-y-2 mb-8">
           <h1 className="font-display text-2xl sm:text-3xl font-semibold text-[var(--ink)]">
             Bạn có một<br />
-            <span className="text-[var(--rose-dark)]">lời nhắn dành cho bạn</span>
+            <span className="text-[var(--rose-dark)]">lời nhắn kèm món quà</span>
           </h1>
           <p className="text-sm text-[var(--muted)]">
-            Nhập mã trên tấm thiệp để mở lời nhắn.
+            Nhập 6 số trên thẻ thiệp đính kèm chiếc túi xách LIS để mở thư.
           </p>
         </div>
 
@@ -184,7 +191,7 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
             type="submit"
             disabled={isLoading || code.length !== 6}
           >
-            <span>{isLoading ? "Đang kiểm tra…" : "Mở lời nhắn"}</span>
+            <span>{isLoading ? "Đang mở thư…" : "Mở lời nhắn"}</span>
             {!isLoading && <ArrowUpRight size={17} />}
           </button>
 
@@ -192,7 +199,7 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
             <p className="text-xs text-[var(--muted)]">
               Nhập sai mã?{" "}
               <span className="block sm:inline text-[var(--ink)] font-medium">
-                Vui lòng kiểm tra lại mã trên tấm thiệp.
+                Vui lòng kiểm tra lại 6 số trên thẻ tag thiệp kèm túi.
               </span>
             </p>
           </div>

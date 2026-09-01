@@ -129,11 +129,12 @@ export function CreateFlow() {
             </div>
 
             <div className="mb-6">
+              <p className="eyebrow mb-1 text-xs">Góc người tặng túi xách</p>
               <h2 className="font-display text-2xl sm:text-3xl font-semibold text-[var(--ink)]">
-                Gửi một lời nhắn
+                Gửi lời nhắn cùng túi xách
               </h2>
               <p className="mt-1.5 text-sm text-[var(--muted)]">
-                Viết lời nhắn của bạn và chúng tôi sẽ giữ bí mật đến người nhận.
+                Viết bức thư số của bạn để gửi kèm món quà túi xách LIS đến người nhận.
               </p>
             </div>
 
@@ -295,16 +296,16 @@ export function CreateFlow() {
                 Lời nhắn của bạn đã được tạo thành công!
               </h2>
               <p className="mt-2 text-sm text-[var(--muted)] max-w-md mx-auto">
-                Lưu mã truy cập này và gửi kèm thiệp cho người nhận.
+                Ghi 6 số này lên tấm thiệp/thẻ tag của chiếc túi xách LIS trước khi trao tặng.
               </p>
             </div>
 
             {/* Code display box */}
             <div className="glass-card-rose p-6 rounded-2xl max-w-sm mx-auto">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rose)] mb-2">
-                MÃ TRUY CẬP CỦA BẠN
+                MÃ TRUY CẬP ĐÍNH KÈM TÚI
               </p>
-              <p className="my-2 font-display text-4xl sm:text-5xl font-bold tracking-[0.22em] text-[var(--rose-dark)] select-all">
+              <p className="my-2 font-sans text-4xl sm:text-5xl font-bold tracking-[0.25em] text-[var(--rose-dark)] select-all leading-none py-1 tabular-nums [font-variant-numeric:lining-nums_tabular-nums]">
                 {code}
               </p>
               <button
@@ -319,14 +320,14 @@ export function CreateFlow() {
 
             <div className="flex items-center justify-center gap-2 text-xs text-[var(--muted)] max-w-sm mx-auto">
               <Info size={16} className="text-[var(--rose)] shrink-0" />
-              <span>Mã này là duy nhất và chỉ người nhận mới mở được lời nhắn.</span>
+              <span>Mã này là duy nhất và chỉ người nhận túi mới mở được bức thư số.</span>
             </div>
 
             {/* QR download card */}
             <div className="rounded-2xl border border-[var(--line)] bg-[rgba(255,253,249,0.7)] p-5 text-center max-w-sm mx-auto">
               <p className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--ink)] mb-3">
                 <QrCode size={16} className="text-[var(--rose)]" />
-                QR mở lời nhắn
+                QR in trên thẻ tag túi xách
               </p>
               <div className="mx-auto w-fit rounded-xl border border-[var(--line)] bg-white p-3 shadow-xs">
                 <QRCodeSVG value={commonQrUrl} size={150} includeMargin level="H" />
