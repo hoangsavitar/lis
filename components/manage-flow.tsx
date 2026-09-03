@@ -210,7 +210,7 @@ export function ManageFlow({ manageToken }: { manageToken: string }) {
             </div>
             <textarea
               id="manage-message"
-              className="field-input min-h-36 resize-y leading-relaxed"
+              className="field-input field-textarea resize-y leading-relaxed"
               maxLength={500}
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}

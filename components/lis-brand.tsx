@@ -12,7 +12,7 @@ export function LisBrand({ className = "", compact = false, inverse = false }: L
       </span>
       {!compact && (
         <span className="hidden sm:inline-block border-l border-[var(--line)] pl-3 text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--muted)]">
-          Túi xách & Lời trao gửi
+          Lời trao gửi
         </span>
       )}
     </span>

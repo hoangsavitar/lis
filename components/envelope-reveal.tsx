@@ -6,10 +6,11 @@ import gsap from "gsap";
 import {
   ArrowClockwise,
   CaretDown,
+  Heart,
+  Key,
   LockKey,
   QrCode,
   Sparkle,
-  Handbag,
 } from "@phosphor-icons/react";
 
 type Gift = {
@@ -18,18 +19,6 @@ type Gift = {
   hideSender: boolean;
   message: string;
 };
-
-// 18 particles radiating in a 360-degree celebration burst
-const BURST_PARTICLES = Array.from({ length: 18 }, (_, i) => {
-  const angle = (i / 18) * 360;
-  const rad = (angle * Math.PI) / 180;
-  const distance = 95 + (i % 3) * 35;
-  const targetX = Math.cos(rad) * distance;
-  const targetY = Math.sin(rad) * distance - 25;
-  const isGold = i % 3 === 0;
-  const isPetal = i % 3 === 1;
-  return { id: i, targetX, targetY, isGold, isPetal, size: isGold ? 10 : 14 };
-});
 
 export function EnvelopeReveal({
   gift,
@@ -45,19 +34,18 @@ export function EnvelopeReveal({
   const envelopeRef = useRef<HTMLDivElement>(null);
   const flapRef = useRef<HTMLDivElement>(null);
   const sealRef = useRef<HTMLButtonElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
   const letterSlideRef = useRef<HTMLDivElement>(null);
 
-  // Floating heartbeat glow on wax seal before opening
+  // Gentle seal glow before opening — disabled with reduced motion
   useEffect(() => {
     if (isOpen || isOpening) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const seal = sealRef.current;
     if (!seal) return;
 
     const tween = gsap.to(seal, {
-      scale: 1.08,
-      boxShadow: "0 12px 30px rgba(212, 130, 142, 0.6)",
-      duration: 1.4,
+      scale: 1.05,
+      duration: 1.6,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
@@ -70,6 +58,12 @@ export function EnvelopeReveal({
 
   function handleOpen() {
     if (isOpen || isOpening) return;
+    // Reduced motion: open instantly, one calm state change
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIsOpen(true);
+      onOpenChange?.(true);
+      return;
+    }
     setIsOpening(true);
 
     const tl = gsap.timeline({
@@ -80,74 +74,53 @@ export function EnvelopeReveal({
       },
     });
 
-    // Step 1: Wax seal pops with scale & golden flash
+    // Step 1: Wax seal pops softly
     if (sealRef.current) {
       tl.to(sealRef.current, {
-        scale: 1.35,
+        scale: 1.25,
         opacity: 0,
-        duration: 0.35,
-        ease: "back.out(2)",
+        duration: 0.3,
+        ease: "power2.out",
       });
     }
 
-    // Step 2: 18 Particles burst outwards in a radial fountain
-    if (particlesRef.current) {
-      const particles = particlesRef.current.querySelectorAll(".burst-particle");
-      tl.fromTo(
-        particles,
-        { scale: 0, opacity: 1, x: 0, y: 0 },
-        {
-          x: (i) => BURST_PARTICLES[i].targetX,
-          y: (i) => BURST_PARTICLES[i].targetY,
-          scale: (i) => (BURST_PARTICLES[i].isGold ? 1.2 : 1),
-          opacity: 0,
-          duration: 1.1,
-          stagger: 0.015,
-          ease: "power3.out",
-        },
-        "<0.05"
-      );
-    }
-
-    // Step 3: 3D Top flap flips open 180 degrees
+    // Step 2: Top flap opens — single spatial motion
     if (flapRef.current) {
       tl.to(
         flapRef.current,
         {
           rotateX: 180,
-          duration: 0.7,
+          duration: 0.6,
           ease: "power2.inOut",
         },
-        "<0.1"
+        "<0.05"
       );
     }
 
-    // Step 4: Inner letter emerges upwards with bounce
+    // Step 3: Letter rises gently
     if (letterSlideRef.current) {
       tl.to(
         letterSlideRef.current,
         {
-          y: -125,
-          scale: 1.04,
-          duration: 0.85,
-          ease: "back.out(1.25)",
+          y: -110,
+          duration: 0.7,
+          ease: "power2.out",
         },
-        "<0.2"
+        "<0.15"
       );
     }
 
-    // Step 5: Envelope dissolves into full stationery letter
+    // Step 4: Envelope fades into stationery
     if (envelopeRef.current) {
       tl.to(
         envelopeRef.current,
         {
           opacity: 0,
-          y: 20,
-          scale: 0.95,
-          duration: 0.45,
+          y: 12,
+          duration: 0.4,
           ease: "power2.in",
         },
-        "+=0.15"
+        "+=0.1"
       );
     }
   }
@@ -173,113 +146,91 @@ export function EnvelopeReveal({
   const APEX_Y = "54%";
 
   return (
-    <div ref={containerRef} className="w-full max-w-md mx-auto space-y-7">
+    <div ref={containerRef} className="w-full max-w-md mx-auto space-y-6">
       {/* Recipient Greeting Header */}
-      <div className="text-center space-y-1.5">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(253,242,244,0.85)] border border-[rgba(212,130,142,0.2)] text-[11px] font-semibold tracking-wider text-[var(--rose-dark)] uppercase">
-          <Handbag size={13} className="text-[var(--rose)]" weight="duotone" />
-          <span>Món quà túi xách LIS</span>
-        </div>
-        <h2 className="font-display text-2xl sm:text-3xl font-semibold text-[var(--ink)] flex items-center justify-center gap-2">
+      <div className="text-center space-y-1.5 px-2">
+        <h2 className="font-display italic text-2xl sm:text-[1.7rem] font-medium text-[var(--ink)] flex items-center justify-center gap-1.5 text-balance">
           <span>Dành cho {gift.recipientName}</span>
-          <span className="text-[var(--rose)]">♡</span>
+          <Heart size={16} weight="fill" className="text-[var(--rose)] shrink-0" aria-hidden="true" />
         </h2>
       </div>
 
-      {/* STATE 1: Interactive Envelope with Mathematically Locked Wax Seal & WOW Particles */}
+      {/* STATE 1: Calm envelope like mockup */}
       {!isOpen && (
-        <div className="relative flex flex-col items-center py-6">
-          {/* Particle Burst Layer */}
-          <div
-            ref={particlesRef}
-            className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center"
-            aria-hidden="true"
-          >
-            {BURST_PARTICLES.map((p) => (
-              <span
-                key={p.id}
-                className="burst-particle absolute rounded-full"
-                style={{
-                  width: p.size,
-                  height: p.size,
-                  background: p.isGold
-                    ? "radial-gradient(circle, #fef08a, #d97706)"
-                    : p.isPetal
-                    ? "radial-gradient(circle, #fce7f3, #e11d48)"
-                    : "radial-gradient(circle, #fff, #f43f5e)",
-                  boxShadow: p.isGold
-                    ? "0 0 12px rgba(251, 191, 36, 0.9)"
-                    : "0 0 10px rgba(244, 63, 94, 0.7)",
-                  opacity: 0,
-                }}
-              />
-            ))}
-          </div>
-
-          {/* 3D Envelope Container */}
+        <div className="relative flex flex-col items-center py-4">
+          {/* Sage Envelope Container — keyboard accessible */}
           <div
             ref={envelopeRef}
-            className="envelope-container relative w-full max-w-[330px] aspect-[1.48/1] rounded-2xl bg-[#7aa69e] shadow-[0_20px_50px_rgba(90,135,126,0.35)] overflow-hidden cursor-pointer group select-none"
-            onClick={handleOpen}
+            className="envelope-container relative w-full max-w-[320px] aspect-[1.5/1] rounded-2xl overflow-hidden cursor-pointer"
             style={{
+              background: "linear-gradient(160deg, #B9D2CE, #9ABEB9)",
+              boxShadow: "0 12px 28px rgba(92,139,134,0.22)",
               perspective: "1000px",
-              // Define CSS variables for zero-deviation geometry
               // @ts-expect-error CSS variable
               "--apex-x": APEX_X,
               "--apex-y": APEX_Y,
             }}
+            onClick={handleOpen}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleOpen();
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label="Mở phong bì để đọc thư"
           >
-            {/* 1. Inner Silk Lining (Backing) */}
-            <div className="absolute inset-0 bg-[#69938c]" />
+            {/* 1. Inner lining */}
+            <div className="absolute inset-0" style={{ background: "#A9C4BE" }} />
 
-            {/* 2. Inner Letter Card (Peeking out) */}
+            {/* 2. Inner Letter Card peeking */}
             <div
               ref={letterSlideRef}
-              className="absolute left-[7%] right-[7%] top-[12%] h-[72%] bg-[#fffdf9] rounded-t-xl shadow-md border-t border-[rgba(212,130,142,0.25)] flex flex-col items-center pt-3 px-4 text-center z-10"
+              className="absolute left-[7%] right-[7%] top-[12%] h-[72%] bg-[#fffefb] rounded-t-xl border-t border-[var(--line)] flex flex-col items-center pt-3 px-4 text-center z-10"
               style={{ willChange: "transform" }}
             >
-              <div className="w-10 h-1 rounded-full bg-[rgba(212,130,142,0.3)] mb-2" />
-              <p className="font-display italic text-xs text-[var(--rose-dark)] font-semibold">
+              <div className="w-10 h-1 rounded-full bg-[rgba(196,126,138,0.25)] mb-2" />
+              <p className="font-display italic text-xs text-[var(--rose-dark)] font-medium">
                 Dear {gift.recipientName},
               </p>
-              <p className="text-[11px] text-[var(--muted)] line-clamp-1 mt-1 opacity-70">
+              <p className="text-[11px] text-[var(--muted)] line-clamp-1 mt-1">
                 {gift.message}
               </p>
             </div>
 
-            {/* 3. Left, Right & Bottom Envelope Pockets (Fold lines meet at EXACT apex-x and apex-y) */}
+            {/* 3. Envelope pockets */}
             <div
               className="absolute inset-0 z-20 pointer-events-none"
               style={{
-                background: "linear-gradient(160deg, #88b3ab, #66948c)",
+                background: "linear-gradient(160deg, #B4CFCB, #93B7B1)",
                 clipPath: `polygon(0% 0%, ${APEX_X} ${APEX_Y}, 100% 0%, 100% 100%, 0% 100%)`,
-                boxShadow: "inset 0 1px 2px rgba(255, 255, 255, 0.25)",
               }}
             />
 
-            {/* 4. 3D Top Flap (Flap vertex reaches EXACTLY to apex-x and apex-y) */}
+            {/* 4. Top flap */}
             <div
               ref={flapRef}
               className="absolute top-0 left-0 w-full z-30 pointer-events-none"
               style={{
                 height: APEX_Y,
                 transformOrigin: "top center",
-                background: "linear-gradient(180deg, #99c2b9, #7aa69e)",
+                background: "linear-gradient(180deg, #C3DAD6, #A9C4BE)",
                 clipPath: `polygon(0% 0%, 100% 0%, ${APEX_X} 100%)`,
-                filter: "drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15))",
                 willChange: "transform",
               }}
             />
 
-            {/* 5. Pink Wax Seal - Mathematically LOCKED to apex-x and apex-y fold line */}
+            {/* 5. Wax seal */}
             <button
               ref={sealRef}
               type="button"
-              className="absolute z-40 size-16 rounded-full cursor-pointer flex items-center justify-center transition-transform hover:scale-110 active:scale-95 shadow-[0_8px_24px_rgba(180,60,80,0.45)]"
+              className="absolute z-40 size-14 rounded-full cursor-pointer flex items-center justify-center"
               style={{
                 left: APEX_X,
                 top: APEX_Y,
                 transform: "translate(-50%, -50%)",
+                boxShadow: "0 6px 18px rgba(168,93,107,0.4)",
               }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -287,13 +238,13 @@ export function EnvelopeReveal({
               }}
               aria-label="Chạm vào con dấu sáp để mở bức thư"
             >
-              <div className="relative size-full rounded-full bg-gradient-to-br from-[#ECA4AF] via-[#D4828E] to-[#AD5061] p-1 flex items-center justify-center ring-2 ring-white/70 border border-[rgba(255,255,255,0.6)] shadow-inner">
-                <div className="size-full rounded-full border border-dashed border-white/80 flex items-center justify-center bg-[rgba(212,130,142,0.25)] shadow-inner">
-                  <span className="font-display font-bold text-lg tracking-[0.2em] text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)] pl-0.5 select-none">
+              <span className="relative size-full rounded-full p-1 flex items-center justify-center ring-2 ring-white/70 border border-white/60" style={{ background: "linear-gradient(135deg, #D89AA5, #C47E8A 55%, #A85D6B)" }}>
+                <span className="size-full rounded-full border border-dashed border-white/80 flex items-center justify-center bg-white/10">
+                  <span className="font-display font-semibold text-[13px] tracking-[0.2em] text-white pl-0.5 select-none">
                     LIS
                   </span>
-                </div>
-              </div>
+                </span>
+              </span>
             </button>
           </div>
 
@@ -301,59 +252,58 @@ export function EnvelopeReveal({
           <button
             type="button"
             onClick={handleOpen}
-            className="mt-6 inline-flex flex-col items-center gap-1.5 text-[var(--ink)] hover:text-[var(--rose-dark)] transition-colors cursor-pointer group"
+            className="mt-5 inline-flex min-h-11 flex-col items-center justify-center gap-0.5 px-4 text-[var(--ink)]"
+            aria-label="Chạm để mở thư"
           >
-            <span className="font-display italic text-lg text-[var(--ink)] group-hover:text-[var(--rose-dark)] flex items-center gap-1.5">
-              <span>Chạm con dấu để mở thư</span>
-              <Sparkle size={16} className="text-[var(--gold)]" weight="fill" />
+            <span className="font-display italic text-lg flex items-center gap-1.5">
+              <span>Nhấn để mở thư</span>
+              <Sparkle size={15} className="text-[var(--gold)]" weight="fill" aria-hidden="true" />
             </span>
             <CaretDown
-              size={18}
-              className="text-[var(--rose)] animate-bounce"
+              size={16}
+              className="text-[var(--rose)]"
               weight="bold"
+              aria-hidden="true"
             />
           </button>
         </div>
       )}
 
-      {/* STATE 2: Full Stationery Letter Card with Shimmer & Typography */}
+      {/* STATE 2: Full Stationery Letter Card */}
       {isOpen && (
-        <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
-          <div className="stationery-card relative w-full bg-[#fffdf9] rounded-2xl p-6 sm:p-9 shadow-2xl border border-[rgba(212,130,142,0.25)]">
+        <div className="space-y-5">
+          <div className="stationery-card relative w-full rounded-2xl p-5 sm:p-7 border border-[var(--line)]" style={{ boxShadow: "var(--shadow-card)" }}>
             {/* Delicate Floral Watermark in corner */}
-            <div className="pointer-events-none absolute right-3 bottom-3 w-28 opacity-25">
+            <div className="pointer-events-none absolute right-3 bottom-3 w-24 opacity-30" aria-hidden="true">
               <Image
                 src="/images/calla-lily-single.jpg"
                 alt=""
-                width={140}
-                height={140}
-                className="object-contain -rotate-12"
+                width={120}
+                height={120}
+                className="rounded-full object-cover -rotate-12"
               />
             </div>
 
-            <div className="relative z-10 space-y-5">
-              <div className="flex items-center justify-between border-b border-[rgba(212,130,142,0.15)] pb-3">
-                <p className="font-display text-2xl sm:text-3xl italic text-[var(--rose-dark)] font-medium">
+            <div className="relative z-10 space-y-4">
+              <div className="flex items-baseline justify-between gap-3 border-b border-[rgba(196,126,138,0.15)] pb-3">
+                <p className="font-display text-xl sm:text-2xl italic text-[var(--rose-dark)] font-medium text-balance">
                   Dear {gift.recipientName},
                 </p>
-                <span className="text-[11px] uppercase tracking-widest text-[var(--muted)]">
+                <span className="text-[10px] uppercase tracking-widest text-[var(--muted)] shrink-0">
                   LIS Gift Letter
                 </span>
               </div>
 
-              <div className="py-2">
-                <p className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed text-[var(--ink)] font-normal">
+              <div className="py-1">
+                <p className="whitespace-pre-wrap text-[15px] sm:text-base leading-relaxed text-[var(--ink)]">
                   {gift.message}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-[rgba(212,130,142,0.12)] text-right">
-                <p className="text-sm sm:text-base font-semibold text-[var(--rose-dark)]">
-                  Yêu thương, {gift.hideSender ? "Một người thương bạn" : gift.senderName || "LIS"}
-                  <span className="ml-1.5 text-[var(--rose)]">♡</span>
-                </p>
-                <p className="text-[11px] text-[var(--muted)] mt-0.5">
-                  Đính kèm cùng món quà túi xách LIS
+              <div className="pt-3 border-t border-[rgba(196,126,138,0.12)] text-right">
+                <p className="text-sm sm:text-[15px] font-semibold text-[var(--rose-dark)] flex items-center justify-end gap-1">
+                  <span>Yêu thương, {gift.hideSender ? "Một người thương bạn" : gift.senderName || "LIS"}</span>
+                  <Heart size={14} weight="fill" className="text-[var(--rose)]" aria-hidden="true" />
                 </p>
               </div>
             </div>
@@ -373,32 +323,18 @@ export function EnvelopeReveal({
         </div>
       )}
 
-      {/* Trust & Security feature badges (Product: Handbag + Digital Gifting) */}
-      <div className="pt-4 border-t border-[rgba(212,130,142,0.18)] space-y-2.5">
-        <div className="feature-pill">
-          <div className="feature-pill-icon">
-            <Handbag size={18} weight="duotone" />
-          </div>
-          <div>
-            <p className="font-semibold text-xs text-[var(--ink)]">
-              Món quà túi xách LIS trao tay
-            </p>
-            <p className="text-[11px] text-[var(--muted)]">
-              Chiếc túi trao gửi cùng bức thư số giấu kín
-            </p>
-          </div>
-        </div>
-
+      {/* Trust badges like mockup */}
+      <div className="pt-4 border-t border-[rgba(196,126,138,0.18)] space-y-2.5">
         <div className="feature-pill">
           <div className="feature-pill-icon">
             <LockKey size={18} weight="duotone" />
           </div>
           <div>
             <p className="font-semibold text-xs text-[var(--ink)]">
-              Mỗi lời nhắn được mã hoá riêng
+              Mỗi lời nhắn được mã hóa riêng
             </p>
             <p className="text-[11px] text-[var(--muted)]">
-              Chỉ bạn và người tặng biết nội dung
+              Chỉ bạn và người gửi biết nội dung
             </p>
           </div>
         </div>
@@ -409,10 +345,24 @@ export function EnvelopeReveal({
           </div>
           <div>
             <p className="font-semibold text-xs text-[var(--ink)]">
-              Quét mã QR trên thiệp kèm túi
+              Quét mã QR chung trên thiệp
             </p>
             <p className="text-[11px] text-[var(--muted)]">
-              Mở bức thư số trên mọi thiết bị di động
+              Mở lời nhắn trên mọi thiết bị
+            </p>
+          </div>
+        </div>
+
+        <div className="feature-pill">
+          <div className="feature-pill-icon">
+            <Key size={18} weight="duotone" />
+          </div>
+          <div>
+            <p className="font-semibold text-xs text-[var(--ink)]">
+              Nhập mã truy cập
+            </p>
+            <p className="text-[11px] text-[var(--muted)]">
+              Để mở lời nhắn chỉ dành cho bạn
             </p>
           </div>
         </div>

@@ -17,69 +17,58 @@ export default function HomePage() {
           <FloralArt className="bg-floral-art bg-floral-left" decorative />
           <FloralArt className="bg-floral-art bg-floral-right" decorative />
 
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-center relative z-10">
-            {/* Left Column: Romantic Typography & Value Proposition */}
-            <div className="space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(253,242,244,0.85)] border border-[rgba(212,130,142,0.25)] text-xs font-semibold tracking-wider text-[var(--rose-dark)] uppercase">
-                <Sparkle size={14} className="text-[var(--rose)]" weight="fill" />
-                <span>Túi xách cao cấp LIS · Lời nhắn giấu kín</span>
+          <div className="grid gap-8 lg:gap-12 items-center relative z-10 lg:grid-cols-[1.1fr_0.9fr] min-w-0">
+            {/* Left Column: Cover like mockup */}
+            <div className="space-y-6 text-center lg:text-left min-w-0 max-w-full">
+              <div className="inline-flex max-w-full min-w-0 items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(253,241,243,0.9)] border border-[var(--line)] text-[11px] font-semibold tracking-wider text-[var(--rose-dark)] uppercase overflow-hidden">
+                <Sparkle size={14} className="text-[var(--rose)] shrink-0" weight="fill" />
+                <span className="text-center leading-relaxed">20/10 · Gửi lời nhắn yêu thương</span>
               </div>
 
               <div>
                 <span className="hero-romantic-title">Dearly,</span>
                 <h1 className="hero-main-title">
-                  from <span className="font-medium tracking-[0.25em] text-[var(--rose-dark)]">LIS</span>
+                  from <span className="not-italic font-semibold tracking-[0.18em] text-[var(--rose-dark)]">LIS</span>
                 </h1>
-                <p className="mt-4 text-base sm:text-lg text-[var(--muted)] max-w-lg mx-auto lg:mx-0 leading-relaxed">
-                  Trao tặng chiếc túi xách nàng yêu thích, gửi kèm bức thư kỹ thuật số bí mật được giấu kín trọn vẹn bên trong món quà.
+                <p className="mt-4 text-[15px] sm:text-base text-[var(--muted)] max-w-md mx-auto lg:mx-0 leading-relaxed text-balance">
+                  Gửi một lời nhắn yêu thương đến người đặc biệt.
                 </p>
               </div>
 
-              {/* Journey CTAs: 01 Tạo lời chúc & 02 Mở lời nhắn */}
-              <div className="grid sm:grid-cols-2 gap-4 max-w-lg mx-auto lg:mx-0 pt-2">
-                <Link href="#tao-loi-chuc" className="journey-card journey-sender group">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold tracking-widest text-[var(--rose)]">01</span>
-                    <ArrowUpRight size={18} className="text-[var(--rose)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </div>
-                  <span className="text-xs text-[var(--muted)]">Bạn tặng túi xách</span>
-                  <strong className="font-display text-lg text-[var(--ink)] mt-0.5">Tạo lời nhắn</strong>
-                  <span className="text-xs text-[var(--muted)] mt-1">Gửi kèm chiếc túi LIS sắp trao</span>
+              {/* Single primary CTA like mockup cover */}
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
+                <Link href="#tao-loi-chuc" className="btn-primary w-full sm:w-auto min-w-44">
+                  <span>Bắt đầu viết lời nhắn</span>
                 </Link>
-
-                <Link href="/mo-qua" className="journey-card journey-recipient group">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold tracking-widest text-[var(--teal-dark)]">02</span>
-                    <ArrowUpRight size={18} className="text-[var(--teal-dark)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </div>
-                  <span className="text-xs text-[var(--muted)]">Bạn được tặng túi</span>
-                  <strong className="font-display text-lg text-[var(--ink)] mt-0.5">Mở lời nhắn</strong>
-                  <span className="text-xs text-[var(--muted)] mt-1">Nhập 6 số trên thiệp kèm túi</span>
+                <Link href="/mo-qua" className="btn-ghost w-full sm:w-auto min-w-44">
+                  <span>Mở lời nhắn</span>
+                  <ArrowUpRight size={16} aria-hidden="true" />
                 </Link>
               </div>
+              <p className="text-xs text-[var(--muted)]">Người nhận có thiệp? Chỉ cần nhập 6 số trên thiệp.</p>
             </div>
 
-            {/* Right Column: Hero Visual Illustration (Pink Calla Lilies in Sage Box) */}
-            <div className="relative mx-auto w-full max-w-sm sm:max-w-md">
-              <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl border border-[rgba(212,130,142,0.2)] bg-white">
+            {/* Right Column: Hero Visual — gift box like mockup */}
+            <div className="relative mx-auto w-full max-w-[320px] sm:max-w-sm">
+              <div className="relative aspect-[3/4] rounded-3xl overflow-hidden border border-[var(--line)] bg-white shadow-[var(--shadow-card)]">
                 <Image
                   src="/images/calla-lily-hero.jpg"
-                  alt="Hộp quà túi xách và hoa Rum hồng LIS thanh lịch"
+                  alt="Hộp quà túi xách LIS màu sage kèm hoa Rum hồng"
                   fill
                   priority
-                  sizes="(max-width: 768px) 90vw, 440px"
+                  sizes="(max-width: 640px) 320px, 400px"
                   className="object-cover"
                 />
               </div>
 
-              {/* Floating decorative label */}
-              <div className="absolute -bottom-4 -left-4 sm:bottom-6 sm:-left-6 bg-white/95 backdrop-blur-md px-4 py-3 rounded-2xl border border-[rgba(212,130,142,0.25)] shadow-xl flex items-center gap-3">
-                <div className="size-10 rounded-full bg-[rgba(253,242,244,0.9)] flex items-center justify-center text-[var(--rose)]">
-                  <Heart size={20} weight="fill" />
+              {/* Floating label — compact mobile */}
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:-left-4 sm:bottom-6 whitespace-nowrap bg-white/95 px-4 py-2.5 rounded-2xl border border-[var(--line)] flex items-center gap-2.5" style={{ boxShadow: "var(--shadow-card)" }}>
+                <div className="size-9 rounded-full bg-[var(--rose-soft)] flex items-center justify-center text-[var(--rose-dark)] shrink-0">
+                  <Heart size={18} weight="fill" />
                 </div>
-                <div>
-                  <p className="text-xs font-semibold text-[var(--ink)]">LIS Handbag & Gifting</p>
-                  <p className="text-[11px] text-[var(--muted)]">Tinh tế trong từng món quà trao tay</p>
+                <div className="text-left">
+                  <p className="text-xs font-semibold text-[var(--ink)]">LIS · Lời trao gửi</p>
+                  <p className="text-[11px] text-[var(--muted)]">Gói trọn yêu thương</p>
                 </div>
               </div>
             </div>

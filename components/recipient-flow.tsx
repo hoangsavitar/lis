@@ -20,7 +20,12 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
   const [gift, setGift] = useState<Gift | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const claimingRef = useRef(false);
+
+  function focusBox(index: number) {
+    inputRefs.current[Math.max(0, Math.min(5, index))]?.focus();
+  }
 
   useEffect(() => {
     if (initialCode.length === 6) {
@@ -29,18 +34,21 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
   }, [initialCode]);
 
   async function executeClaim(targetCode: string) {
+    const clean = targetCode.replace(/\D/g, "").slice(0, 6);
     setError("");
-    if (targetCode.length !== 6) {
+    if (clean.length !== 6) {
       setError("Vui lòng nhập đủ 6 chữ số trên thiệp.");
-      inputRef.current?.focus();
+      focusBox(clean.length);
       return;
     }
+    if (claimingRef.current) return;
+    claimingRef.current = true;
     setIsLoading(true);
     try {
       const response = await fetch("/api/claim", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: targetCode }),
+        body: JSON.stringify({ code: clean }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Mã không chính xác");
@@ -51,8 +59,10 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
           ? claimError.message
           : "Không tìm thấy lời nhắn. Vui lòng kiểm tra lại mã trên thiệp."
       );
+      focusBox(0);
     } finally {
       setIsLoading(false);
+      claimingRef.current = false;
     }
   }
 
@@ -61,25 +71,57 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
     executeClaim(code);
   }
 
-  function handleInputChange(value: string) {
-    const clean = value.replace(/\D/g, "").slice(0, 6);
-    setCode(clean);
-    setError("");
-    if (clean.length === 6) {
-      executeClaim(clean);
+  // code is always kept contiguous (no gaps), so code[index] maps to box index
+  function handleBoxChange(index: number, raw: string) {
+    const digit = raw.replace(/\D/g, "").slice(-1);
+    let next: string;
+    let focusIndex = index;
+    if (digit) {
+      if (index > code.length) {
+        next = (code + digit).slice(0, 6);
+        focusIndex = Math.min(next.length, 5);
+      } else {
+        next = (code.slice(0, index) + digit + code.slice(index + 1)).slice(0, 6);
+        focusIndex = Math.min(index + 1, 5);
+      }
+    } else {
+      next = code.slice(0, index) + code.slice(index + 1);
     }
+    setCode(next);
+    setError("");
+    focusBox(focusIndex);
+    if (digit && next.length === 6) executeClaim(next);
+  }
+
+  function handleBoxKeyDown(index: number, event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Backspace" && !code[index] && index > 0) {
+      event.preventDefault();
+      setCode(code.slice(0, index - 1) + code.slice(index));
+      setError("");
+      focusBox(index - 1);
+    }
+  }
+
+  function handlePaste(event: React.ClipboardEvent<HTMLInputElement>) {
+    event.preventDefault();
+    const digits = (event.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+    if (!digits) return;
+    setCode(digits);
+    setError("");
+    if (digits.length === 6) executeClaim(digits);
+    else focusBox(digits.length);
   }
 
   function handleReset() {
     setGift(null);
     setCode("");
     setError("");
-    window.setTimeout(() => inputRef.current?.focus(), 100);
+    window.setTimeout(() => focusBox(0), 100);
   }
 
   if (gift) {
     return (
-      <section className="section-shell max-w-lg py-8 md:py-16 relative">
+      <section className="section-shell max-w-lg py-8 md:py-16 relative overflow-x-clip">
         <FloralArt className="bg-floral-art bg-floral-right opacity-30" decorative />
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-6">
@@ -103,80 +145,73 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
   }
 
   return (
-    <section className="section-shell max-w-md py-8 sm:py-16 relative">
-      <FloralArt className="bg-floral-art bg-floral-left opacity-35" decorative />
-      <FloralArt className="bg-floral-art bg-floral-right opacity-30" decorative />
+    <section className="section-shell max-w-md py-8 sm:py-14 relative overflow-x-clip">
+      <FloralArt className="bg-floral-art bg-floral-left opacity-25" decorative />
+      <FloralArt className="bg-floral-art bg-floral-right opacity-20" decorative />
 
-      <div className="paper-card p-6 sm:p-9 text-center relative overflow-hidden z-10">
+      <div className="paper-card p-5 sm:p-8 text-center relative overflow-hidden z-10">
         {/* Brand Header */}
-        <div className="mb-6 flex justify-center">
+        <div className="mb-5 flex justify-center">
           <LisBrand />
         </div>
 
-        {/* Circular Aura with Pink Calla Lily */}
-        <div className="relative mx-auto size-28 sm:size-32 rounded-full bg-[rgba(253,242,244,0.9)] border border-[rgba(212,130,142,0.25)] flex items-center justify-center p-3 shadow-inner mb-6">
-          <div className="relative w-full h-full">
-            <Image
-              src="/images/calla-lily-single.jpg"
-              alt="Hoa Rum hồng LIS"
-              fill
-              sizes="128px"
-              className="object-contain"
-              priority
-            />
-          </div>
+        {/* Circular flower — blended, no white box */}
+        <div className="relative mx-auto size-24 sm:size-28 rounded-full overflow-hidden bg-[var(--rose-soft)] border border-[var(--line)] mb-5">
+          <Image
+            src="/images/calla-lily-single.jpg"
+            alt="Hoa Rum hồng LIS"
+            fill
+            sizes="112px"
+            className="object-cover"
+            priority
+          />
         </div>
 
         {/* Headings matching mockup screen 4 */}
-        <div className="space-y-2 mb-8">
-          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-[var(--ink)]">
+        <div className="space-y-2 mb-6 px-1">
+          <h1 className="font-display italic text-2xl sm:text-[1.7rem] font-medium text-[var(--ink)] text-balance leading-snug">
             Bạn có một<br />
             <span className="text-[var(--rose-dark)]">lời nhắn kèm món quà</span>
           </h1>
-          <p className="text-sm text-[var(--muted)]">
-            Nhập 6 số trên thẻ thiệp đính kèm chiếc túi xách LIS để mở thư.
+          <p className="text-[13px] sm:text-sm text-[var(--muted)] text-balance leading-relaxed">
+            Nhập mã trên tấm thiệp để mở lời nhắn.
           </p>
         </div>
 
-        {/* 6 Digit Input Form */}
-        <form onSubmit={handleFormSubmit} className="space-y-6">
+        {/* 6 Digit Input Form — 6 real inputs so mobile keyboards work */}
+        <form onSubmit={handleFormSubmit} className="space-y-5">
           <div
-            className="relative cursor-pointer"
-            onClick={() => inputRef.current?.focus()}
+            className="code-grid"
+            role="group"
+            aria-label="Mã mở thư gồm 6 chữ số"
           >
-            {/* 6 Interactive Tiles */}
-            <div className="code-grid" aria-hidden="true">
-              {Array.from({ length: 6 }, (_, index) => {
-                const char = code[index] || "";
-                const isCurrent = index === code.length && code.length < 6;
-                return (
-                  <span
-                    key={index}
-                    className={`code-tile ${char ? "is-filled" : ""} ${
-                      isCurrent ? "is-active" : ""
-                    }`}
-                  >
-                    {char}
-                  </span>
-                );
-              })}
-            </div>
-
-            {/* Hidden Input for Mobile Keypad */}
-            <input
-              ref={inputRef}
-              id="claimCode"
-              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full text-center"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              autoComplete="one-time-code"
-              maxLength={6}
-              value={code}
-              onChange={(e) => handleInputChange(e.target.value)}
-              autoFocus
-              aria-label="Nhập 6 số mã mở thư"
-            />
+            {Array.from({ length: 6 }, (_, index) => {
+              const char = code[index] || "";
+              const isCurrent = index === code.length && code.length < 6;
+              return (
+                <input
+                  key={index}
+                  ref={(el) => {
+                    inputRefs.current[index] = el;
+                  }}
+                  className={`code-tile ${char ? "is-filled" : ""} ${
+                    isCurrent ? "is-active" : ""
+                  }`}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete={index === 0 ? "one-time-code" : "off"}
+                  autoFocus={index === 0}
+                  maxLength={1}
+                  value={char}
+                  onChange={(e) => handleBoxChange(index, e.target.value)}
+                  onKeyDown={(e) => handleBoxKeyDown(index, e)}
+                  onPaste={handlePaste}
+                  onFocus={(e) => e.target.select()}
+                  aria-label={`Chữ số thứ ${index + 1} của mã 6 số`}
+                />
+              );
+            })}
           </div>
 
           {error && (
@@ -195,11 +230,11 @@ export function RecipientFlow({ initialCode = "" }: { initialCode?: string }) {
             {!isLoading && <ArrowUpRight size={17} />}
           </button>
 
-          <div className="pt-2">
-            <p className="text-xs text-[var(--muted)]">
+          <div className="px-1 pt-1">
+            <p className="text-xs text-[var(--muted)] text-balance leading-relaxed">
               Nhập sai mã?{" "}
-              <span className="block sm:inline text-[var(--ink)] font-medium">
-                Vui lòng kiểm tra lại 6 số trên thẻ tag thiệp kèm túi.
+              <span className="text-[var(--ink)] font-medium">
+                Vui lòng kiểm tra lại mã trên tấm thiệp.
               </span>
             </p>
           </div>

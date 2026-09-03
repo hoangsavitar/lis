@@ -14,8 +14,8 @@ type FormState = {
 };
 
 const initialForm: FormState = {
-  recipientName: "Minh Anh",
-  senderName: "A.",
+  recipientName: "",
+  senderName: "",
   hideSender: false,
   message: "Cảm ơn em vì luôn là nguồn động lực và niềm vui mỗi ngày. Chúc em 20/10 thật nhiều hạnh phúc và bình an.",
 };
@@ -90,51 +90,52 @@ export function CreateFlow() {
   return (
     <section id="tao-loi-chuc" className="section-shell scroll-mt-24 py-12 md:py-20">
       <div className="mx-auto max-w-2xl">
-        {/* Step Indicator Header */}
-        <div className="text-center mb-8">
-          <p className="eyebrow mb-2">
+        {/* Step Indicator Header — minimal like mockup */}
+        <div className="text-center mb-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--rose-dark)] mb-3">
             {step === 1 && "1. Tạo lời nhắn"}
             {step === 2 && "2. Xem trước"}
             {step === 3 && "3. Tạo thành công"}
           </p>
-          <div className="create-stepper mx-auto max-w-sm">
+          <ol className="create-stepper mx-auto max-w-xs list-none p-0">
             {[
-              { number: 1, label: "Tạo lời nhắn" },
+              { number: 1, label: "Tạo" },
               { number: 2, label: "Xem trước" },
-              { number: 3, label: "Thành công" },
+              { number: 3, label: "Xong" },
             ].map((item) => (
-              <div
+              <li
                 key={item.number}
+                aria-current={item.number === step ? "step" : undefined}
                 className={`create-step ${item.number <= step ? "is-active" : ""}`}
               >
-                <span className="create-step-number">{item.number}</span>
+                <span className="create-step-number" aria-hidden="true">{item.number}</span>
                 <span>{item.label}</span>
-              </div>
+                {item.number < 3 && <span aria-hidden="true" className="mx-0.5 opacity-40">·</span>}
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
 
         {/* STEP 1: Form tạo lời nhắn */}
         {step === 1 && (
-          <div className="paper-card relative overflow-hidden p-6 sm:p-9">
-            {/* Floral illustration in corner */}
-            <div className="pointer-events-none absolute -right-6 -top-4 w-28 sm:w-36 opacity-90">
+          <div className="paper-card relative overflow-hidden p-5 sm:p-8">
+            {/* Floral illustration in corner — delicate */}
+            <div className="pointer-events-none absolute -right-4 -top-2 w-24 sm:w-28 opacity-70" aria-hidden="true">
               <Image
                 src="/images/calla-lily-single.jpg"
-                alt="Hoa Rum hồng LIS"
-                width={160}
-                height={160}
-                className="rotate-12 object-contain"
+                alt=""
+                width={120}
+                height={120}
+                className="rotate-12 rounded-full object-cover"
               />
             </div>
 
             <div className="mb-6">
-              <p className="eyebrow mb-1 text-xs">Góc người tặng túi xách</p>
-              <h2 className="font-display text-2xl sm:text-3xl font-semibold text-[var(--ink)]">
-                Gửi lời nhắn cùng túi xách
+              <h2 className="font-display italic text-2xl sm:text-3xl font-medium text-[var(--ink)]">
+                Gửi một lời nhắn
               </h2>
               <p className="mt-1.5 text-sm text-[var(--muted)]">
-                Viết bức thư số của bạn để gửi kèm món quà túi xách LIS đến người nhận.
+                Viết lời nhắn của bạn và chúng tôi sẽ giữ bí mật đến người nhận.
               </p>
             </div>
 
@@ -190,7 +191,7 @@ export function CreateFlow() {
                   </span>
                 </div>
                 <textarea
-                  className="field-input min-h-32 resize-y leading-relaxed"
+                  className="field-input field-textarea resize-y leading-relaxed"
                   id="message"
                   maxLength={500}
                   value={form.message}
@@ -228,7 +229,7 @@ export function CreateFlow() {
 
             {/* Preview Card matching mockup */}
             <div className="glass-card-rose relative overflow-hidden p-6 sm:p-8 text-center">
-              <div className="pointer-events-none absolute -right-4 -bottom-6 w-24 sm:w-32 opacity-85">
+              <div className="pointer-events-none absolute -right-4 -bottom-6 w-24 sm:w-32 opacity-85" aria-hidden="true">
                 <Image
                   src="/images/calla-lily-single.jpg"
                   alt=""
@@ -238,22 +239,25 @@ export function CreateFlow() {
                 />
               </div>
 
+              {/* Text sits above the flower artwork */}
+              <div className="relative z-10">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--rose)] mb-1">
                 Gửi đến
               </p>
-              <p className="font-display text-2xl sm:text-3xl font-semibold text-[var(--ink)] mb-5">
+              <p className="font-display text-2xl sm:text-3xl font-semibold text-[var(--ink)] mb-5 break-words">
                 {form.recipientName || "Người thương"}
               </p>
 
               <div className="mx-auto max-w-md rounded-2xl bg-white/75 p-5 text-left border border-[rgba(212,130,142,0.15)] shadow-xs">
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-[var(--ink)]">
+                <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-[var(--ink)]">
                   {form.message}
                 </p>
               </div>
 
-              <p className="mt-5 text-sm font-medium text-[var(--rose-dark)]">
+              <p className="mt-5 text-sm font-medium text-[var(--rose-dark)] break-words">
                 Yêu thương, {form.hideSender ? "Một người thương bạn" : form.senderName || "LIS"}
               </p>
+              </div>
             </div>
 
             {error && (
@@ -296,14 +300,14 @@ export function CreateFlow() {
                 Lời nhắn của bạn đã được tạo thành công!
               </h2>
               <p className="mt-2 text-sm text-[var(--muted)] max-w-md mx-auto">
-                Ghi 6 số này lên tấm thiệp/thẻ tag của chiếc túi xách LIS trước khi trao tặng.
+                Lưu mã truy cập này và gửi kèm thiệp cho người nhận.
               </p>
             </div>
 
             {/* Code display box */}
             <div className="glass-card-rose p-6 rounded-2xl max-w-sm mx-auto">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--rose)] mb-2">
-                MÃ TRUY CẬP ĐÍNH KÈM TÚI
+                MÃ TRUY CẬP CỦA BẠN
               </p>
               <p className="my-2 font-sans text-4xl sm:text-5xl font-bold tracking-[0.25em] text-[var(--rose-dark)] select-all leading-none py-1 tabular-nums [font-variant-numeric:lining-nums_tabular-nums]">
                 {code}
@@ -320,14 +324,14 @@ export function CreateFlow() {
 
             <div className="flex items-center justify-center gap-2 text-xs text-[var(--muted)] max-w-sm mx-auto">
               <Info size={16} className="text-[var(--rose)] shrink-0" />
-              <span>Mã này là duy nhất và chỉ người nhận túi mới mở được bức thư số.</span>
+              <span>Mã này là duy nhất và chỉ người nhận mới mở được lời nhắn.</span>
             </div>
 
             {/* QR download card */}
             <div className="rounded-2xl border border-[var(--line)] bg-[rgba(255,253,249,0.7)] p-5 text-center max-w-sm mx-auto">
               <p className="flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--ink)] mb-3">
                 <QrCode size={16} className="text-[var(--rose)]" />
-                QR in trên thẻ tag túi xách
+                QR chung trên thiệp
               </p>
               <div className="mx-auto w-fit rounded-xl border border-[var(--line)] bg-white p-3 shadow-xs">
                 <QRCodeSVG value={commonQrUrl} size={150} includeMargin level="H" />

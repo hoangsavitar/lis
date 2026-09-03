@@ -1,7 +1,11 @@
 import { RecipientFlow } from "@/components/recipient-flow";
+import { SiteHeader } from "@/components/site-header";
 
 export default function ReceivePage() {
   return (
-    <main id="main-content"><RecipientFlow /></main>
+    <>
+      <SiteHeader />
+      <main id="main-content"><RecipientFlow /></main>
+    </>
   );
 }

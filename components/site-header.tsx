@@ -5,14 +5,16 @@ import { LisBrand } from "@/components/lis-brand";
 export function SiteHeader() {
   return (
     <header className="site-header">
-      <div className="section-shell flex min-h-[76px] items-center justify-between gap-4">
-        <Link href="/" className="brand-link" aria-label="LIS BY LII — Trang chủ">
-          <LisBrand />
+      <div className="section-shell flex min-h-16 items-center justify-between gap-2 py-2">
+        <Link href="/" className="min-w-0 shrink-0" aria-label="LIS BY LII — Trang chủ">
+          <LisBrand compact />
         </Link>
-        <nav className="flex items-center gap-2" aria-label="Điều hướng chính">
+        <nav className="flex min-w-0 items-center gap-1 sm:gap-2" aria-label="Điều hướng chính">
           <Link href="/mo-qua" className="header-link">Mở lời nhắn</Link>
           <Link href="/#tao-loi-chuc" className="header-cta">
-            Gửi lời chúc <ArrowUpRight size={16} aria-hidden="true" />
+            <span className="hidden sm:inline">Gửi lời chúc</span>
+            <span className="sm:hidden">Gửi</span>
+            <ArrowUpRight size={15} aria-hidden="true" className="shrink-0" />
           </Link>
         </nav>
       </div>
