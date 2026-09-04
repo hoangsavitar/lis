@@ -28,7 +28,15 @@ export default function HomePage() {
               <div>
                 <span className="hero-romantic-title">Dearly,</span>
                 <h1 className="hero-main-title">
-                  from <span className="not-italic font-semibold tracking-[0.18em] text-[var(--rose-dark)]">LIS</span>
+                  from{" "}
+                  <Image
+                    src="/brand/lis-do.png"
+                    alt="LIS"
+                    width={215}
+                    height={100}
+                    priority
+                    className="inline-block h-[0.8em] w-auto mix-blend-multiply"
+                  />
                 </h1>
                 <p className="mt-4 text-[15px] sm:text-base text-[var(--muted)] max-w-md mx-auto lg:mx-0 leading-relaxed text-balance">
                   Gửi một lời nhắn yêu thương đến người đặc biệt.

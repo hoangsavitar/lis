@@ -19,6 +19,7 @@
 }
 
 :root {
+  color-scheme: light;
   --canvas: #fff8f1;
   --surface: #fffefb;
   --ink: #3a2d33;
@@ -87,7 +88,6 @@ a {
 
 .section-shell {
   width: min(100% - 2rem, 1120px);
-  max-width: 100%;
   margin-inline: auto;
   min-width: 0;
 }

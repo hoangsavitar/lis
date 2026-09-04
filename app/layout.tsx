@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
 
@@ -19,6 +19,15 @@ const beVietnam = Be_Vietnam_Pro({
 export const metadata: Metadata = {
   title: "LIS — Dearly, from LIS | Lời nhắn cùng món quà",
   description: "Gửi một lời nhắn yêu thương đến người đặc biệt cùng món quà từ LIS.",
+};
+
+// Match browser chrome (address bar / status area) to the ivory canvas
+// so in-app browsers don't frame the page in black.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#fff8f1",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

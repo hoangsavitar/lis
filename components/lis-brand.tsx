@@ -1,15 +1,22 @@
+import Image from "next/image";
+
 type LisBrandProps = {
   className?: string;
   compact?: boolean;
-  inverse?: boolean;
+  /** Logo tone: maroon on light surfaces (default) or black for high-contrast use */
+  tone?: "maroon" | "black";
 };
 
-export function LisBrand({ className = "", compact = false, inverse = false }: LisBrandProps) {
+export function LisBrand({ className = "", compact = false, tone = "maroon" }: LisBrandProps) {
   return (
-    <span className={`lis-brand inline-flex items-center gap-3 ${inverse ? "text-white" : "text-[var(--ink)]"} ${className}`}>
-      <span className="font-display text-xl sm:text-2xl font-semibold tracking-[0.32em] text-[var(--ink)] uppercase select-none">
-        L I S
-      </span>
+    <span className={`lis-brand inline-flex items-center gap-3 ${className}`}>
+      <Image
+        src={tone === "black" ? "/brand/lis-den.png" : "/brand/lis-do.png"}
+        alt="LIS BY LII"
+        width={215}
+        height={100}
+        className="h-6 w-auto select-none mix-blend-multiply sm:h-7"
+      />
       {!compact && (
         <span className="hidden sm:inline-block border-l border-[var(--line)] pl-3 text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--muted)]">
           Lời trao gửi
@@ -18,4 +25,3 @@ export function LisBrand({ className = "", compact = false, inverse = false }: L
     </span>
   );
 }
-
