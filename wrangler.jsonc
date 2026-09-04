@@ -6,11 +6,9 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  // Persistent gift storage. Create once with:
-  //   npx wrangler kv namespace create GIFTS
-  // then uncomment below and paste the returned id. Until then the site
-  // still works (in-memory fallback), but letters vanish on redeploy.
-  // "kv_namespaces": [{ "binding": "GIFTS", "id": "PASTE_KV_NAMESPACE_ID_HERE" }],
+  // Persistent gift storage (Cloudflare KV). Letters survive redeploys
+  // and are visible across all edge isolates.
+  "kv_namespaces": [{ "binding": "GIFTS", "id": "a8794236aa0d49ba850cc385b1b0278c" }],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
