@@ -1,22 +1,18 @@
 import { NextResponse } from "next/server";
-import { getGiftStore, persistGiftStore } from "@/lib/gift-store";
+import { deleteGiftByCode, findGiftByManageToken, saveGift } from "@/lib/gift-store";
 
 type RouteContext = { params: Promise<{ manageToken: string }> };
 
-function findGift(manageToken: string) {
-  return [...getGiftStore().values()].find((gift) => gift.manageToken === manageToken);
-}
-
 export async function GET(_request: Request, context: RouteContext) {
   const { manageToken } = await context.params;
-  const gift = findGift(manageToken);
+  const gift = await findGiftByManageToken(manageToken);
   if (!gift) return NextResponse.json({ error: "Link quản lý không tồn tại hoặc đã hết hạn." }, { status: 404 });
   return NextResponse.json({ gift: { code: gift.code, recipientName: gift.recipientName, senderName: gift.senderName || "", hideSender: gift.hideSender, message: gift.message, theme: gift.theme } }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
   const { manageToken } = await context.params;
-  const gift = findGift(manageToken);
+  const gift = await findGiftByManageToken(manageToken);
   if (!gift) return NextResponse.json({ error: "Link quản lý không tồn tại hoặc đã hết hạn." }, { status: 404 });
   try {
     const body = await request.json();
@@ -28,7 +24,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     gift.hideSender = Boolean(body.hideSender);
     gift.message = message;
     if (typeof body.theme === "string") gift.theme = body.theme;
-    persistGiftStore();
+    await saveGift(gift);
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Dữ liệu chưa hợp lệ." }, { status: 400 });
@@ -37,10 +33,8 @@ export async function PATCH(request: Request, context: RouteContext) {
 
 export async function DELETE(_request: Request, context: RouteContext) {
   const { manageToken } = await context.params;
-  const gifts = getGiftStore();
-  const gift = findGift(manageToken);
+  const gift = await findGiftByManageToken(manageToken);
   if (!gift) return NextResponse.json({ error: "Link quản lý không tồn tại hoặc đã hết hạn." }, { status: 404 });
-  gifts.delete(gift.code);
-  persistGiftStore();
+  await deleteGiftByCode(gift.code);
   return NextResponse.json({ ok: true });
 }

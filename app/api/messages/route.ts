@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Tên người nhận và lời chúc là bắt buộc." }, { status: 400 });
     }
 
-    const record = createGift({ recipientName, senderName: senderName || undefined, hideSender, message, theme });
+    const record = await createGift({ recipientName, senderName: senderName || undefined, hideSender, message, theme });
     return NextResponse.json({ code: record.code, manageToken: record.manageToken });
   } catch {
     return NextResponse.json({ error: "Dữ liệu chưa hợp lệ." }, { status: 400 });

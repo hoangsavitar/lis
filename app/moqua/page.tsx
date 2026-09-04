@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Compatibility route for QR files generated before the `/mo-qua` path fix. */
+/** Compatibility route for QR files generated before the `/open` path. */
 export default function LegacyReceivePage() {
-  redirect("/mo-qua");
+  redirect("/open");
 }

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getGiftStore } from "@/lib/gift-store";
+import { findGiftByCode } from "@/lib/gift-store";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const code = typeof body.code === "string" ? body.code.replace(/\D/g, "").slice(0, 6) : "";
-    const gift = getGiftStore().get(code);
+    const gift = await findGiftByCode(code);
     if (!gift || code.length !== 6) {
       return NextResponse.json({ error: "Mã chưa đúng hoặc lời chúc đã hết hạn." }, { status: 404, headers: { "Cache-Control": "no-store" } });
     }

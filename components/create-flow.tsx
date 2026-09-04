@@ -20,7 +20,7 @@ const initialForm: FormState = {
   message: "Cảm ơn em vì luôn là nguồn động lực và niềm vui mỗi ngày. Chúc em 20/10 thật nhiều hạnh phúc và bình an.",
 };
 
-const commonQrUrl = process.env.NEXT_PUBLIC_COMMON_QR_URL || "http://localhost:3000/mo-qua";
+const commonQrUrl = process.env.NEXT_PUBLIC_COMMON_QR_URL || "http://localhost:3000/open";
 
 export function CreateFlow() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -350,7 +350,7 @@ export function CreateFlow() {
             </div>
 
             <div className="space-y-2.5 pt-2 max-w-sm mx-auto">
-              <Link href={`/mo-qua`} className="btn-teal w-full text-sm">
+              <Link href={`/open`} className="btn-teal w-full text-sm">
                 <span>Xem thử lời nhắn</span>
                 <ArrowUpRight size={16} />
               </Link>

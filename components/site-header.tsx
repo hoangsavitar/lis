@@ -10,7 +10,7 @@ export function SiteHeader() {
           <LisBrand compact />
         </Link>
         <nav className="flex min-w-0 items-center gap-1 sm:gap-2" aria-label="Điều hướng chính">
-          <Link href="/mo-qua" className="header-link">Mở lời nhắn</Link>
+          <Link href="/open" className="header-link">Mở lời nhắn</Link>
           <Link href="/#tao-loi-chuc" className="header-cta">
             <span className="hidden sm:inline">Gửi lời chúc</span>
             <span className="sm:hidden">Gửi</span>

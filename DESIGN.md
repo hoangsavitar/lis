@@ -39,7 +39,7 @@ interface text uses a restrained system sans stack.
 
 ## Product flow
 
-The shop prints one QR that opens `/mo-qua`. Each sender creates a message and
+The shop prints one QR that opens `/open`. Each sender creates a message and
 receives a unique six-digit code to write on the physical card. The recipient
 scans the QR, enters that code, then opens the matching letter. No account or
 login appears in the experience.

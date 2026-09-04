@@ -229,7 +229,7 @@ export function ManageFlow({ manageToken }: { manageToken: string }) {
               {saved ? <Check size={16} /> : <FloppyDisk size={16} />}
               <span>{saving ? "Đang lưu…" : saved ? "Đã lưu thành công" : "Lưu thay đổi"}</span>
             </button>
-            <Link className="btn-teal flex-1" href="/mo-qua">
+            <Link className="btn-teal flex-1" href="/open">
               <span>Xem trang mở quà</span>
               <ArrowUpRight size={16} />
             </Link>

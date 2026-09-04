@@ -1,11 +1,6 @@
-import { RecipientFlow } from "@/components/recipient-flow";
-import { SiteHeader } from "@/components/site-header";
+import { redirect } from "next/navigation";
 
-export default function ReceivePage() {
-  return (
-    <>
-      <SiteHeader />
-      <main id="main-content"><RecipientFlow /></main>
-    </>
-  );
+/** Legacy slug: old QR codes and links point here. */
+export default function LegacyOpenPage() {
+  redirect("/open");
 }

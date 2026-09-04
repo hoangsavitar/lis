@@ -8,6 +8,10 @@ node_modules/
 out/
 build/
 
+# Cloudflare (OpenNext build output, never commit)
+.open-next/
+.wrangler/
+
 # Environment
 .env
 .env*.local

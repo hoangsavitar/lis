@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowUpRight, Heart, Sparkle } from "@phosphor-icons/react/dist/ssr";
@@ -5,6 +6,11 @@ import { CreateFlow } from "@/components/create-flow";
 import { FloralArt } from "@/components/floral-art";
 import { LisBrand } from "@/components/lis-brand";
 import { SiteHeader } from "@/components/site-header";
+
+export const metadata: Metadata = {
+  title: "Send a Letter | LIS BY LII",
+  description: "Write a secret letter to your special someone, delivered with a gift from LIS.",
+};
 
 export default function HomePage() {
   return (

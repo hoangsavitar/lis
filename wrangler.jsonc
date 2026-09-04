@@ -2,10 +2,15 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "lis",
   "main": ".open-next/worker.js",
-  "compatibility_date": "2024-09-23",
+  "compatibility_date": "2025-09-01",
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  // Persistent gift storage. Create once with:
+  //   npx wrangler kv namespace create GIFTS
+  // then uncomment below and paste the returned id. Until then the site
+  // still works (in-memory fallback), but letters vanish on redeploy.
+  // "kv_namespaces": [{ "binding": "GIFTS", "id": "PASTE_KV_NAMESPACE_ID_HERE" }],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
